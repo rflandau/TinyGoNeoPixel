@@ -84,3 +84,10 @@ func (np *NeoPixels) aw() {
 	}
 
 }
+
+// Apply the current state of the LEDs to the board itself.
+// This is called automatically if .AutoWrite is set.
+// Use .Flush() if you want to ensure multiple LED changes occur simultaneously, rather than incrementally.
+func (np *NeoPixels) Flush() error {
+	return np.conn.WriteColors(np.colors)
+}
