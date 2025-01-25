@@ -91,3 +91,30 @@ func (np *NeoPixels) aw() {
 func (np *NeoPixels) Flush() error {
 	return np.conn.WriteColors(np.colors)
 }
+
+//region pre-defined patterns
+
+func (np *NeoPixels) StaticRainbow() {
+	for i := range np.ledCount {
+		switch i % 7 {
+		case 0:
+			np.colors[i] = Red
+		case 1:
+			np.colors[i] = Orange
+		case 2:
+			np.colors[i] = Yellow
+		case 3:
+			np.colors[i] = Green
+		case 4:
+			np.colors[i] = Blue
+		case 5:
+			np.colors[i] = Navy
+		case 6:
+			np.colors[i] = Purple
+		}
+	}
+
+	np.aw()
+}
+
+//endregion
