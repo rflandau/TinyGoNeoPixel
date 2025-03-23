@@ -14,11 +14,9 @@ func (ErrOutOfRange) Error() string {
 	return "led index must be 0 < x < LED count-1"
 }
 
-type led = color.RGBA
-
 type NeoPixels struct {
 	ledCount  uint
-	colors    []led
+	colors    []color.RGBA
 	conn      ws2812.Device
 	AutoWrite bool // Write changes directly to the LEDs. If false, you must call .Flush()
 }
@@ -31,7 +29,7 @@ func New(pin machine.Pin, count uint) *NeoPixels {
 
 	np := &NeoPixels{
 		ledCount: count,
-		colors:   make([]led, count),
+		colors:   make([]color.RGBA, count),
 		conn:     ws2812.NewWS2812(pin),
 	}
 
@@ -54,7 +52,7 @@ func (np *NeoPixels) Off() {
 }
 
 // Set the color of a single LED
-func (np *NeoPixels) SetLED(index uint, color led) error {
+func (np *NeoPixels) SetLED(index uint, color color.RGBA) error {
 	if index >= np.ledCount {
 		return ErrOutOfRange{}
 	}
@@ -68,7 +66,7 @@ func (np *NeoPixels) SetLED(index uint, color led) error {
 
 // Sets all LEDs to the colors associated with their index.
 // Only updates to the lower of the two lengths (LED count and len(colors)).
-func (np *NeoPixels) SetAllLEDs(colors []led) {
+func (np *NeoPixels) SetAllLEDs(colors []color.RGBA) {
 	maxIndex := max(uint(len(colors)), np.ledCount)
 	for i := range maxIndex {
 		np.colors[i] = colors[i]
