@@ -92,6 +92,30 @@ func (np *NeoPixels) Flush() error {
 
 //region pre-defined patterns
 
+// sets LEDs alternatively to red and green
+func (np *NeoPixels) StaticChristmas() {
+	for i := range np.ledCount {
+		switch i % 2 {
+		case 0:
+			np.colors[i] = Green
+		case 1:
+			np.colors[i] = Red
+		}
+	}
+
+	np.aw()
+}
+
+// sets all LEDs to green
+func (np *NeoPixels) StaticGreen() {
+	for i := range np.ledCount {
+		np.colors[i] = Green
+	}
+
+	np.aw()
+}
+
+// sets LEDs to the colors of the rainbow
 func (np *NeoPixels) StaticRainbow() {
 	for i := range np.ledCount {
 		switch i % 7 {
