@@ -66,10 +66,19 @@ func (np *NeoPixels) SetLED(index uint, color color.RGBA) error {
 
 // Sets all LEDs to the colors associated with their index.
 // Only updates to the lower of the two lengths (LED count and len(colors)).
-func (np *NeoPixels) SetAllLEDs(colors []color.RGBA) {
+func (np *NeoPixels) BatchSetLEDs(colors []color.RGBA) {
 	maxIndex := max(uint(len(colors)), np.ledCount)
 	for i := range maxIndex {
 		np.colors[i] = colors[i]
+	}
+
+	np.aw()
+}
+
+// Set all LEDs to the given color.
+func (np *NeoPixels) SetAllLEDs(color color.RGBA) {
+	for i := range np.colors {
+		np.colors[i] = color
 	}
 
 	np.aw()
