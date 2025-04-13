@@ -1,4 +1,4 @@
-package npxl
+package tinygoneopixel
 
 import "image/color"
 
