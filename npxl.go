@@ -114,6 +114,11 @@ func (np *NeoPixels) Flush() error {
 	return np.conn.WriteColors(np.colors)
 }
 
+// Returns the current set of colors.
+func (np *NeoPixels) GetColors() (colors []color.RGBA, flushed bool) {
+	return np.colors, np.flushed
+}
+
 //region pre-defined patterns
 
 // sets LEDs alternatively to red and green
