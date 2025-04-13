@@ -1,4 +1,7 @@
-/* This package manages the NeoPixel LEDs (and maintains a local data representation) via ws2812 */
+/*
+This package manages the NeoPixel LEDs (and maintains a local data representation) via ws2812.
+Not thread-safe; if your device has multiple CPUs, you will have to provide your own lock.
+*/
 package npxl
 
 import (
