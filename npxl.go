@@ -19,6 +19,7 @@ type NeoPixels struct {
 	colors    []color.RGBA
 	conn      ws2812.Device
 	AutoWrite bool // Write changes directly to the LEDs. If false, you must call .Flush()
+	flushed   bool // has the current colors array been flushed
 }
 
 // Returns a new NeoPixel struct set to read off the given pin.
@@ -35,6 +36,7 @@ func New(pin machine.Pin, count uint) *NeoPixels {
 
 	np.Off()
 	np.conn.WriteColors(np.colors)
+	np.flushed = true
 
 	return np
 }
@@ -57,7 +59,10 @@ func (np *NeoPixels) SetLED(index uint, color color.RGBA) error {
 		return ErrOutOfRange{}
 	}
 
-	np.colors[index] = color
+	if !equalColors(np.colors[index], color) {
+		np.flushed = false
+		np.colors[index] = color
+	}
 
 	np.aw()
 
@@ -88,14 +93,21 @@ func (np *NeoPixels) SetAllLEDs(color color.RGBA) {
 func (np *NeoPixels) aw() {
 	if np.AutoWrite {
 		np.conn.WriteColors(np.colors)
+		np.flushed = true
 	}
 
+}
+
+// tell if the two colors are deep equal
+func equalColors(c1, c2 color.RGBA) bool {
+	return c1.A == c2.A && c1.R == c2.R && c1.G == c2.G && c1.B == c2.B
 }
 
 // Apply the current state of the LEDs to the board itself.
 // This is called automatically if .AutoWrite is set.
 // Use .Flush() if you want to ensure multiple LED changes occur simultaneously, rather than incrementally.
 func (np *NeoPixels) Flush() error {
+	np.flushed = true
 	return np.conn.WriteColors(np.colors)
 }
 
